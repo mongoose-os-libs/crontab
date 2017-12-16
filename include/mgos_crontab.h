@@ -14,6 +14,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
+/*
+ * An opaque type for the crontab job ID.
+ */
 typedef int mgos_crontab_job_id_t;
 
 /*
