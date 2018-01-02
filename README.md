@@ -5,7 +5,7 @@ maintains a persisted set of cron jobs. Crontab file is simply a JSON file
 (actually managed by [jstore](https://github.com/mongoose-os-libs/jstore))
 which looks like this:
 
-```json
+```javascript
 {"items":[
   ["1", {
     "at": "0 0 7 * * MON-FRI",
