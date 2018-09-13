@@ -11,6 +11,7 @@ includes:
 tags:
   - c
   - core
+  - docs:misc:Crontab
 
 libs:
   - origin: https://github.com/mongoose-os-libs/cron
