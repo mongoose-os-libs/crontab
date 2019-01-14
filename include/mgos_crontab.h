@@ -190,6 +190,12 @@ bool mgos_crontab_iterate(mgos_crontab_iterate_cb cb, void *userdata,
 void mgos_crontab_register_handler(struct mg_str action, mgos_crontab_cb cb,
                                    void *userdata);
 
+/*
+ * Calculate the next fire date after the specified date, using crontab ID
+ * (returned by all cron RPC methods)
+ */
+time_t mgos_crontab_get_next_invocation(mgos_crontab_job_id_t id, time_t date);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
