@@ -83,7 +83,7 @@ extern "C" {
 /*
  * An opaque type for the crontab job ID.
  */
-typedef int mgos_crontab_job_id_t;
+typedef intptr_t mgos_crontab_job_id_t;
 
 /*
  * Invalid value for the crontab job id.
