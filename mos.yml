@@ -14,7 +14,7 @@ tags:
   - docs:misc:Crontab
 
 libs:
-  - origin: https://github.com/mongoose-os-libs/cron
-  - origin: https://github.com/mongoose-os-libs/jstore
+  - origin: https://github.com/cesanta/mongoose-os/libs/cron
+  - origin: https://github.com/cesanta/mongoose-os/libs/jstore
 
 manifest_version: 2017-09-29
