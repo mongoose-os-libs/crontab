@@ -508,20 +508,25 @@ static void apply_crontab_cb(mgos_crontab_job_id_t id, struct mg_str at,
 }
 
 /*
- * Applies all jobs from the crontab to the actual cron library: deactivates
- * all cron jobs which were activated before (if any), and registers all jobs
- * from the given crontab.
+ * Deactivate all existing cron jobs
  */
-static void ct_apply(struct crontab *ct) {
-  size_t i;
-
-  /* Deactivate all existing cron jobs */
-  for (i = 0; i < s_cron_ids.len / sizeof(mgos_cron_id_t); i++) {
+void mgos_crontab_remove_all() {
+  for (size_t i = 0; i < s_cron_ids.len / sizeof(mgos_cron_id_t); i++) {
     mgos_cron_id_t job_id = ((mgos_cron_id_t *) s_cron_ids.buf)[i];
     mgos_cron_remove(job_id);
   }
 
   s_cron_ids.len = 0;
+}
+
+/*
+ * Applies all jobs from the crontab to the actual cron library: deactivates
+ * all cron jobs which were activated before (if any), and registers all jobs
+ * from the given crontab.
+ */
+static void ct_apply(struct crontab *ct) {
+  /* Deactivate all existing cron jobs */
+  mgos_crontab_remove_all();
 
   /* Activate all jobs from the crontab */
   ct_iterate(ct, apply_crontab_cb, NULL, NULL);
@@ -649,9 +654,16 @@ clean:
 /*
  * Reads crontab from the given file, and calls ct_apply() for it.
  */
-static void apply_crontab_from_json(const char *json_path) {
+void mgos_crontab_reload_from_json(const char *json_path) {
   char *err = NULL;
-  struct crontab *ct = ct_create(json_path, &err);
+  struct crontab *ct;
+
+  if(json_path == NULL) {
+    ct = ct_create(JSON_PATH, &err);
+  } else {
+    ct = ct_create(json_path, &err);
+  }
+
   if (err != NULL) {
     goto clean;
   }
@@ -835,7 +847,7 @@ time_t mgos_crontab_get_next_invocation(mgos_crontab_job_id_t id, time_t date) {
 bool mgos_crontab_init(void) {
   mbuf_init(&s_cron_ids, 0);
 
-  apply_crontab_from_json(JSON_PATH);
+  mgos_crontab_reload_from_json(JSON_PATH);
 
   return true;
 }
