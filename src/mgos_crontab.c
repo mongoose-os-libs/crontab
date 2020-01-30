@@ -510,7 +510,7 @@ static void apply_crontab_cb(mgos_crontab_job_id_t id, struct mg_str at,
 /*
  * Deactivate all existing cron jobs
  */
-void mgos_crontab_remove_all() {
+void mgos_crontab_remove_all(void) {
   for (size_t i = 0; i < s_cron_ids.len / sizeof(mgos_cron_id_t); i++) {
     mgos_cron_id_t job_id = ((mgos_cron_id_t *) s_cron_ids.buf)[i];
     mgos_cron_remove(job_id);
@@ -520,14 +520,10 @@ void mgos_crontab_remove_all() {
 }
 
 /*
- * Applies all jobs from the crontab to the actual cron library: deactivates
- * all cron jobs which were activated before (if any), and registers all jobs
- * from the given crontab.
+ * Adds all jobs from the crontab to the actual cron library:
+ * registers all jobs from the given crontab.
  */
 static void ct_apply(struct crontab *ct) {
-  /* Deactivate all existing cron jobs */
-  mgos_crontab_remove_all();
-
   /* Activate all jobs from the crontab */
   ct_iterate(ct, apply_crontab_cb, NULL, NULL);
 }
@@ -652,9 +648,9 @@ clean:
 /* }}} */
 
 /*
- * Reads crontab from the given file, and calls ct_apply() for it.
+ * Reads crontab from the given file, and registers the jobs in cron library
  */
-void mgos_crontab_reload_from_json(const char *json_path) {
+void mgos_crontab_load_from_json(const char *json_path) {
   char *err = NULL;
   struct crontab *ct;
 
@@ -711,6 +707,7 @@ bool mgos_crontab_job_add(struct mg_str at, bool enable, struct mg_str action,
     goto clean;
   }
 
+  mgos_crontab_remove_all();
   ct_apply(ct);
 
 clean:
@@ -739,6 +736,7 @@ bool mgos_crontab_job_edit(mgos_crontab_job_id_t id, struct mg_str at,
     goto clean;
   }
 
+  mgos_crontab_remove_all();
   ct_apply(ct);
 
 clean:
@@ -763,6 +761,7 @@ bool mgos_crontab_job_remove(mgos_crontab_job_id_t id, char **perr) {
     goto clean;
   }
 
+  mgos_crontab_remove_all();
   ct_apply(ct);
 
 clean:
@@ -847,7 +846,7 @@ time_t mgos_crontab_get_next_invocation(mgos_crontab_job_id_t id, time_t date) {
 bool mgos_crontab_init(void) {
   mbuf_init(&s_cron_ids, 0);
 
-  mgos_crontab_reload_from_json(JSON_PATH);
+  mgos_crontab_load_from_json(JSON_PATH);
 
   return true;
 }
