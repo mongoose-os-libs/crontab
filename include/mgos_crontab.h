@@ -196,6 +196,17 @@ void mgos_crontab_register_handler(struct mg_str action, mgos_crontab_cb cb,
  */
 time_t mgos_crontab_get_next_invocation(mgos_crontab_job_id_t id, time_t date);
 
+/*
+ * Deactivate all existing cron jobs
+ */
+void mgos_crontab_remove_all(void);
+
+/*
+ * Reads crontab from the given file, and adds the jobs to cron library.
+ * If NULL is given as json_path, default crontab.json path will be used.
+ */
+void mgos_crontab_load_from_json(const char *json_path);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
