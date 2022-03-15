@@ -612,9 +612,9 @@ static void cron_cb(void *user_data, mgos_cron_id_t cron_id) {
     goto clean;
   }
 
-  LOG(LL_INFO, ("Cron job %ld is firing: \"%.*s\" %.*s", (long) iid,
-                (int) ctx.action.len, ctx.action.p, (int) ctx.payload.len,
-                ctx.payload.p));
+  LOG(LL_DEBUG, ("Cron job %ld is firing: \"%.*s\" %.*s", (long) iid,
+                 (int) ctx.action.len, ctx.action.p, (int) ctx.payload.len,
+                 ctx.payload.p));
   if (!ctx.enable) {
     LOG(LL_WARN, ("Cron job %ld is disabled, but still fired!", (long) iid));
   }
