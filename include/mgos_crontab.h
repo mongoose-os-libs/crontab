@@ -73,6 +73,7 @@
 #define CS_MOS_LIBS_CRONTAB_SRC_CRONTAB_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "common/mg_str.h"
 
